@@ -1,18 +1,20 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <ChannelTile />
+    <VideoTile />
   </div>
 </template>
 
+
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import ChannelTile from '../components/ChannelTile'
+import VideoTile from '../components/VideoTile'
 
 export default {
   name: "Home",
   components: {
-    HelloWorld,
-  },
+    ChannelTile,
+    VideoTile
+  }
 };
 </script>
