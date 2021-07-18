@@ -1,6 +1,6 @@
 <template>
     <header>
-        <img id="youtube_mobile_icon" alt="Youtube Icon" src="../assets/youtubeMobileIcon.png" />
+        <a href="#"><img id="youtube_mobile_icon" alt="Youtube Icon" src="../assets/youtubeMobileIcon.png" /></a>
 
         <p v-if="!state">{{text}}</p>
         <input v-if="state" type="text" placeholder="Search" name="search" v-model="text"/>
@@ -30,12 +30,13 @@ export default {
 
 <style scoped>
 header {
+    width: 100%;
     height: 60px;
     background-color: red;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 #youtube_mobile_icon {
     padding-left: 15px;
