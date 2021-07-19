@@ -23,8 +23,13 @@ export default {
     methods: {
         toggleSearchInput(){
             this.state = !this.state
+        },
+    },
+    watch: {
+        "text" : function(value) {
+            this.$emit('search', value);
         }
-    }
+    },
 }
 </script>
 

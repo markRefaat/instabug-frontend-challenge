@@ -3,8 +3,8 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </div> -->
-  <Header />
-  <router-view />
+  <Header @search="search" />
+  <router-view :searchText="searchText" />
 </template>
 
 <script>
@@ -12,6 +12,16 @@ import Header from "./components/Header"
 export default {
   components: {
     Header,
+  },
+  data() {
+    return {
+      searchText: "",
+    }
+  },
+  methods: {
+    search(q) {
+      this.searchText = q;
+    }
   }
 }
 </script>
@@ -24,17 +34,4 @@ export default {
   // text-align: center;
   color: #2c3e50;
 }
-
-// #nav {
-//   padding: 30px;
-
-//   a {
-//     font-weight: bold;
-//     color: #2c3e50;
-
-//     &.router-link-exact-active {
-//       color: #42b983;
-//     }
-//   }
-// }
 </style>

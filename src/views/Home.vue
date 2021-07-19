@@ -26,16 +26,18 @@ export default {
     FilterButton,
     PlaylistTile,
   },
+  props: {
+    searchText: String,
+  },
   data() {
     return {
       data: [],
     };
   },
   methods: {
-    async fetchSearch() {
+    async fetchSearch(q) {
       const res = await fetch(
-        "https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=الدحيح&maxResults=50&type=video%2Cchannel%2Cplaylist&key=" +
-          process.env.VUE_APP_API_KEY
+        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${q}&maxResults=50&type=video%2Cchannel%2Cplaylist&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
       const selectedData = data["items"].map((e) => {
@@ -69,8 +71,13 @@ export default {
       return selectedData;
     },
   },
-  async created() {
-    this.data = await this.fetchSearch();
-  },
+  watch: {
+    "searchText": {
+      handler: async function (q) {
+        this.data = await this.fetchSearch(q);
+      },
+      deep: true,
+    },
+  }
 };
 </script>
