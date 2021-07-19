@@ -119,8 +119,16 @@ export default {
     "$route.params.id": {
       handler: async function (id) {
         if (id != null) {
-          this.videos = await this.fetchVideos();
-          this.details = await this.fetchVideoDetails();
+          if (this.$route.params.id.length == 11) 
+          {
+            this.id = this.$route.params.id;
+            this.videos = await this.fetchRelatedVideos();
+            this.details = await this.fetchVideoDetails(this.$route.params.id);
+          } else {
+            this.videos = await this.fetchPlaylistVideos();
+            this.details = await this.fetchVideoDetails(this.videos[0].id);
+            this.id = this.videos[0].id;
+          }
         }
       },
     },
