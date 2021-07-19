@@ -1,55 +1,117 @@
 <template>
-<div class="video">
-  <div class="video-wrapper">
-    <iframe src="https://www.youtube.com/embed/qZXt1Aom3Cs"></iframe>
-  </div>
-  <div class="video-details">
-    <div class="video-title">SpongeBob in Real Life Episode 2</div>
-    <div class="video-data">JChaseFilms 54,013,577 views</div>
-  </div>    
-  <div class="video-footer-buttons">
+  <div class="video">
+    <div class="video-wrapper">
+      <iframe
+        :src="'https://www.youtube.com/embed/' + $route.params.id"
+      ></iframe>
+    </div>
+    <div class="video-details">
+      <div class="video-title">{{ details.title }}</div>
+      <div class="video-data">
+        {{ details.channelName }} <br />
+        {{ details.views }} views
+      </div>
+    </div>
+    <div class="video-footer-buttons">
       <div>
-      <i class="fa fa-thumbs-up"></i> 149k
-      <i class="fa fa-thumbs-down"></i> 25K
+        <i class="fa fa-thumbs-up"></i> {{ details.likes }}
+        <i class="fa fa-thumbs-down"></i> {{ details.dislikes }}
       </div>
 
       <div>
-      <i class="fa fa-plus"></i>
-      <i class="fa fa-share"></i>
-      <i class="fa fa-flag"></i>
+        <i class="fa fa-plus"></i>
+        <i class="fa fa-share"></i>
+        <i class="fa fa-flag"></i>
       </div>
+    </div>
+    <hr />
+    <div v-for="d in relatedVideos" :key="d.id">
+      <VideoTile :video="d" />
+    </div>
   </div>
-  <hr>
-  <div v-for="n in 10" :key="n">
-    <VideoTile />
-  </div>
-</div>
-  <!-- <br> -->
 </template>
 
-
 <script>
-import VideoTile from "../components/VideoTile.vue"
+import VideoTile from "../components/VideoTile.vue";
 export default {
   name: "Video",
   components: {
     VideoTile,
-  }
+  },
+  data() {
+    return {
+      relatedVideos: [],
+      details: {},
+    };
+  },
+  methods: {
+    async fetchRelatedVideos() {
+      const res = await fetch(
+        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=${this.$route.params.id}&maxResults=5&type=video&key=${process.env.VUE_APP_API_KEY}`
+      );
+      const data = await res.json();
+      const selectedData = data["items"].map((e) => {
+        return {
+          type: e["id"]["kind"],
+          id: e["id"]["videoId"],
+          title: e["snippet"]["title"],
+          thumbnail: e["snippet"]["thumbnails"]["medium"]["url"],
+          channelName: e["snippet"]["channelTitle"],
+        };
+      });
+      return selectedData;
+    },
+    kFormatter(num) {
+      return Math.abs(num) > 999
+        ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + "k"
+        : Math.sign(num) * Math.abs(num);
+    },
+    async fetchVideoDetails() {
+      const res = await fetch(
+        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2Cstatistics&id=${this.$route.params.id}&key=${process.env.VUE_APP_API_KEY}`
+      );
+      const data = await res.json();
+      const selectedData = {
+        title: data["items"][0]["snippet"]["title"],
+        thumbnail: data["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
+        channelName: data["items"][0]["snippet"]["channelTitle"],
+        likes: this.kFormatter(data["items"][0]["statistics"]["likeCount"]),
+        dislikes: this.kFormatter(
+          data["items"][0]["statistics"]["dislikeCount"]
+        ),
+        views: this.kFormatter(data["items"][0]["statistics"]["viewCount"]),
+      };
+      return selectedData;
+    },
+  },
+  async created() {
+    this.relatedVideos = await this.fetchRelatedVideos();
+    this.details = await this.fetchVideoDetails();
+  },
+  watch: {
+    "$route.params.id": {
+      handler: async function (id) {
+        if (id != null) {
+          this.relatedVideos = await this.fetchRelatedVideos();
+          this.details = await this.fetchVideoDetails();
+        }
+      },
+    },
+  },
 };
 </script>
 
-
 <style scoped>
 .video {
-    max-width: 1400px;
-    margin: auto;
+  max-width: 1400px;
+  margin: auto;
 }
 i {
-    font-size: 30px;
-    padding-left: 15px;
+  font-size: 25px;
+  padding-left: 15px;
 }
 .fa-flag {
-    padding-right: 20px;
+  padding-right: 20px;
 }
 
 .video-wrapper {
@@ -83,9 +145,7 @@ i {
 }
 
 .video-footer-buttons {
-    display: flex;
-    justify-content: space-between;
-
+  display: flex;
+  justify-content: space-between;
 }
-
 </style>
