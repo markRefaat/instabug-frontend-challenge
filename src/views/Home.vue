@@ -32,7 +32,7 @@ export default {
     };
   },
   methods: {
-    async fetchTasks() {
+    async fetchSearch() {
       const res = await fetch(
         "https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=الدحيح&maxResults=50&type=video%2Cchannel%2Cplaylist&key=" +
           process.env.VUE_APP_API_KEY
@@ -70,7 +70,7 @@ export default {
     },
   },
   async created() {
-    this.data = await this.fetchTasks();
+    this.data = await this.fetchSearch();
   },
 };
 </script>
