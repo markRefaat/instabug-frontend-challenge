@@ -2,7 +2,7 @@
   <div class="video">
     <div class="video-wrapper">
       <iframe
-        :src="'https://www.youtube.com/embed/' + $route.params.id"
+        :src="'https://www.youtube.com/embed/' + id"
       ></iframe>
     </div>
     <div class="video-details">
@@ -25,7 +25,7 @@
       </div>
     </div>
     <hr />
-    <div v-for="d in relatedVideos" :key="d.id">
+    <div v-for="d in videos" :key="d.id">
       <VideoTile :video="d" />
     </div>
   </div>
@@ -42,6 +42,7 @@ export default {
     return {
       relatedVideos: [],
       details: {},
+      id: ""
     };
   },
   methods: {
@@ -66,9 +67,9 @@ export default {
         ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + "k"
         : Math.sign(num) * Math.abs(num);
     },
-    async fetchVideoDetails() {
+    async fetchVideoDetails(id) {
       const res = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2Cstatistics&id=${this.$route.params.id}&key=${process.env.VUE_APP_API_KEY}`
+        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2Cstatistics&id=${id}&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
       const selectedData = {
@@ -82,17 +83,43 @@ export default {
         views: this.kFormatter(data["items"][0]["statistics"]["viewCount"]),
       };
       return selectedData;
+    }, 
+    async fetchPlaylistVideos() {
+      const res = await fetch(
+        `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${this.$route.params.id}&maxResults=5&key=${process.env.VUE_APP_API_KEY}`
+      );
+      const data = await res.json();
+      // console.log(data);
+      const selectedData = data["items"].map((e) => {
+        return {
+          type: e["snippet"]["resourceId"]["kind"],
+          id: e["snippet"]["resourceId"]["videoId"],
+          title: e["snippet"]["title"],
+          thumbnail: e["snippet"]["thumbnails"]["medium"]["url"],
+          channelName: e["snippet"]["channelTitle"],
+        };
+      });
+      return selectedData;
     },
   },
   async created() {
-    this.relatedVideos = await this.fetchRelatedVideos();
-    this.details = await this.fetchVideoDetails();
+    if (this.$route.params.id.length == 11) 
+    {
+      this.id = this.$route.params.id;
+      this.videos = await this.fetchRelatedVideos();
+      this.details = await this.fetchVideoDetails(this.$route.params.id);
+    } else {
+      this.videos = await this.fetchPlaylistVideos();
+      this.details = await this.fetchVideoDetails(this.videos[0].id);
+      this.id = this.videos[0].id;
+    }
+
   },
   watch: {
     "$route.params.id": {
       handler: async function (id) {
         if (id != null) {
-          this.relatedVideos = await this.fetchRelatedVideos();
+          this.videos = await this.fetchVideos();
           this.details = await this.fetchVideoDetails();
         }
       },

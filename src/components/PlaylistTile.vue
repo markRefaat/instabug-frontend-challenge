@@ -1,5 +1,5 @@
 <template>
-  <a :href="'#/playlist/' + playlist.id" class="playlist-container">
+  <a :href="'#/video/' + playlist.id" class="playlist-container">
     <div class="playlist-icon-wrapper">
       <div class="playlist-icon-overlay">37</div>
       <img class="playlist-icon" :src="playlist.thumbnail" />
