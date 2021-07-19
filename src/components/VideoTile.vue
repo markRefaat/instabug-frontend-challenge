@@ -1,23 +1,23 @@
 <template>
-    <a href="#/video/123" class="video-container">
-        <img class="video-icon" src="https://images.unsplash.com/photo-1558637845-c8b7ead71a3e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8MTYlM0E5fGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80" />
-        <div class="video-details">
-            <div class="video-title">SpongeBob in Real Life Episode 2</div>
-            <div class="video-data">JChaseFilms <br> 54,013,577 views</div>
-        </div>    
-    </a>
+  <a :href="'#/video/' + video.id" class="video-container">
+    <img class="video-icon" :src="video.thumbnail" />
+    <div class="video-details">
+      <div class="video-title">{{ video.title }}</div>
+      <div class="video-data">{{ video.channelName }}</div>
+    </div>
+  </a>
 </template>
 
 <script>
 export default {
-  name: "VideoTile"
-}
+  name: "VideoTile",
+  props: {
+    video: Object,
+  },
+};
 </script>
 
-
-
 <style scoped>
-
 .video-container {
   display: flex;
   align-items: center;
@@ -28,7 +28,7 @@ export default {
 
 .video-icon {
   margin-right: 10px;
-  background-color: #AAA;
+  background-color: #aaa;
   max-width: 300px;
   height: 100px;
 }
@@ -42,9 +42,15 @@ export default {
 .video-title {
   font-size: 20px;
   color: black;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-height: 2.6em;
 }
 
 .video-data {
   color: #555;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-height: 1.2em;
 }
 </style>

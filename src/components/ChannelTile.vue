@@ -1,16 +1,19 @@
 <template>
-    <a href="#/channel/123" class="channel-container">
-        <img class="channel-icon" src="http://unsplash.it/36/36?gravity=center" />
-        <div class="channel-details">
-            <div class="channel-title">SpongeBob SquarePants</div>
-            <div class="channel-data">149 Videos <br> 23,858 subscribers</div>
-        </div>    
+    <a :href="'#/channel/'+channel.id" class="channel-container">
+      <img class="channel-icon" :src="channel.thumbnail" />
+      <div class="channel-details">
+        <div class="channel-title">{{ channel.title }}</div>
+        <!-- <div class="channel-data">149 Videos <br> 23,858 subscribers</div> -->
+      </div>
     </a>
 </template>
 
 <script>
 export default {
-  name: "ChannelTile"
+  name: "ChannelTile",
+  props: {
+    channel: Object,
+  },
 }
 </script>
 

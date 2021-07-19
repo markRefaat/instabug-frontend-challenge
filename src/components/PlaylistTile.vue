@@ -1,20 +1,22 @@
 <template>
-    <a href="#/playlist/123" class="playlist-container">
-        <div class="playlist-icon-wrapper">
+    <a :href="'#/playlist/'+playlist.id" class="playlist-container">
+      <div class="playlist-icon-wrapper">
         <div class="playlist-icon-overlay">37</div>
-        <img class="playlist-icon" src="https://images.unsplash.com/photo-1558637845-c8b7ead71a3e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8MTYlM0E5fGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80" />
-        </div>
-
-        <div class="playlist-details">
-            <div class="playlist-title">SpongeBob PlayListSpongeBob PlayListSpongeBob PlayListSpongeBob PlayListSpongeBob PlayListSpongeBob PlayListSpongeBob PlayListSpongeBob PlayList</div>
-            <div class="playlist-data">JChaseFilms</div>
-        </div>    
+        <img class="playlist-icon" :src="playlist.thumbnail" />
+      </div>
+      <div class="playlist-details">
+        <div class="playlist-title">{{ playlist.title }}</div>
+        <div class="playlist-data">{{ playlist.channelName }}</div>
+      </div>    
     </a>
 </template>
 
 <script>
 export default {
-  name: "PlaylistTile"
+  name: "PlaylistTile",
+  props: {
+    playlist: Object,
+  }
 }
 </script>
 
