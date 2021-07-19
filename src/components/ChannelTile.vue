@@ -1,11 +1,11 @@
 <template>
-    <a :href="'#/channel/'+channel.id" class="channel-container">
-      <img class="channel-icon" :src="channel.thumbnail" />
-      <div class="channel-details">
-        <div class="channel-title">{{ channel.title }}</div>
-        <!-- <div class="channel-data">149 Videos <br> 23,858 subscribers</div> -->
-      </div>
-    </a>
+  <a :href="'#/channel/' + channel.id" class="channel-container">
+    <img class="channel-icon" :src="channel.thumbnail" />
+    <div class="channel-details">
+      <div class="channel-title">{{ channel.title }}</div>
+      <!-- <div class="channel-data">149 Videos <br> 23,858 subscribers</div> -->
+    </div>
+  </a>
 </template>
 
 <script>
@@ -14,12 +14,10 @@ export default {
   props: {
     channel: Object,
   },
-}
+};
 </script>
 
-
 <style scoped>
-
 .channel-container {
   display: flex;
   align-items: center;
@@ -31,7 +29,7 @@ export default {
 .channel-icon {
   margin-right: 15px;
   border-radius: 50%;
-  background-color: #AAA;
+  background-color: #aaa;
   width: 100px;
   height: 100px;
 }

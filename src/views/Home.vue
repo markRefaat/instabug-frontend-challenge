@@ -33,9 +33,9 @@ export default {
   },
   methods: {
     async fetchTasks() {
-      console.log(process.env.VUE_APP_API_KEY)
       const res = await fetch(
-        "https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=الدحيح&maxResults=50&type=video%2Cchannel%2Cplaylist&key="+process.env.VUE_APP_API_KEY
+        "https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=الدحيح&maxResults=50&type=video%2Cchannel%2Cplaylist&key=" +
+          process.env.VUE_APP_API_KEY
       );
       const data = await res.json();
       const selectedData = data["items"].map((e) => {
