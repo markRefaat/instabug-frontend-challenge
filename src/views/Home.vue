@@ -9,8 +9,19 @@
       <ChannelTile v-if="d.type == 'youtube#channel'" :channel="d" />
       <VideoTile v-if="d.type == 'youtube#video'" :video="d" />
     </div>
+    <button v-if="this.data.length > 0" id="loadMore" @click="loadMore">Load more</button>
   </div>
 </template>
+
+<style>
+#loadMore {
+  font-size: 20px;
+  width: 95%;
+  margin:0 auto;
+  display:block;
+  padding: 5px;
+}
+</style>
 
 <script>
 import ChannelTile from "../components/ChannelTile";
@@ -32,14 +43,18 @@ export default {
   data() {
     return {
       data: [],
+      nextPageToken: "",
+      q: "",
     };
   },
   methods: {
     async fetchSearch(q) {
+      this.q = q;
       const res = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${q}&maxResults=50&type=video%2Cchannel%2Cplaylist&key=${process.env.VUE_APP_API_KEY}`
+        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${q}&maxResults=10&pageToken=${this.nextPageToken}&type=video%2Cchannel%2Cplaylist&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
+      this.nextPageToken = data['nextPageToken'];
       const selectedData = data["items"].map((e) => {
         if (e["id"]["kind"] == "youtube#video") {
           return {
@@ -69,6 +84,10 @@ export default {
         }
       });
       return selectedData;
+    },
+    async loadMore() {
+      let moreData = await this.fetchSearch(this.q);
+      this.data = this.data.concat(moreData);
     },
   },
   watch: {

@@ -28,6 +28,7 @@
     <div v-for="d in videos" :key="d.id">
       <VideoTile :video="d" />
     </div>
+    <button v-if="videos.length > 0" id="loadMore" @click="loadMore">Load more</button>
   </div>
 </template>
 
@@ -40,17 +41,19 @@ export default {
   },
   data() {
     return {
-      relatedVideos: [],
+      videos: [],
       details: {},
+      nextPageToken: "",
       id: ""
     };
   },
   methods: {
     async fetchRelatedVideos() {
       const res = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=${this.$route.params.id}&maxResults=5&type=video&key=${process.env.VUE_APP_API_KEY}`
+        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=${this.$route.params.id}&pageToken=${this.nextPageToken}&maxResults=5&type=video&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
+      this.nextPageToken = data['nextPageToken'];
       const selectedData = data["items"].map((e) => {
         return {
           type: e["id"]["kind"],
@@ -86,10 +89,10 @@ export default {
     }, 
     async fetchPlaylistVideos() {
       const res = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${this.$route.params.id}&maxResults=5&key=${process.env.VUE_APP_API_KEY}`
+        `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&pageToken=${this.nextPageToken}&playlistId=${this.$route.params.id}&maxResults=5&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
-      // console.log(data);
+      this.nextPageToken = data['nextPageToken'];
       const selectedData = data["items"].map((e) => {
         return {
           type: e["snippet"]["resourceId"]["kind"],
@@ -100,6 +103,16 @@ export default {
         };
       });
       return selectedData;
+    },
+    async loadMore() {
+      if (this.$route.params.id.length == 11) 
+      {
+        let moreVideos = await this.fetchRelatedVideos();
+        this.videos = this.videos.concat(moreVideos);
+      } else {
+        let moreVideos = await this.fetchPlaylistVideos();
+        this.videos = this.videos.concat(moreVideos);
+      }
     },
   },
   async created() {

@@ -22,6 +22,7 @@
       <PlaylistTile v-if="d.type == 'youtube#playlist'" :playlist="d" />
       <VideoTile v-if="d.type == 'youtube#video'" :video="d" />
     </div>
+    <button v-if="data.length > 0" id="loadMore" @click="loadMore">Load more</button>
   </div>
 </template>
 
@@ -34,6 +35,7 @@ export default {
     return {
       details: {},
       data: [],
+      nextPageToken: "",
     }
   },
   methods: {
@@ -60,9 +62,10 @@ export default {
 
     async fetchChannelVideosAndPlaylists() {
       const res = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${this.$route.params.id}&maxResults=50&type=video%2Cplaylist&key=${process.env.VUE_APP_API_KEY}`
+        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${this.$route.params.id}&pageToken=${this.nextPageToken}&maxResults=10&type=video%2Cplaylist&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
+      this.nextPageToken = data['nextPageToken'];
       const selectedData = data["items"].map((e) => {
         if (e["id"]["kind"] == "youtube#video") {
           return {
@@ -84,6 +87,10 @@ export default {
         }
       });
       return selectedData;
+    },
+     async loadMore() {
+      let moreData = await this.fetchChannelVideosAndPlaylists();
+      this.data = this.data.concat(moreData);
     },
   },
   async created() {
