@@ -36,6 +36,8 @@ export default {
 <style scoped>
 header {
     width: 100%;
+    max-width: 1400px;
+    margin: auto;
     height: 60px;
     background-color: red;
     display: flex;

@@ -163,7 +163,7 @@ i {
 }
 
 .video-wrapper {
-  max-width: 99%;
+  max-width: 99.8%;
   position: relative;
   padding-bottom: 56.25%; /* 16:9 */
   height: 0;
