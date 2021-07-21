@@ -2,8 +2,6 @@
   <div class="home">
     <span>
       <Filters v-if="this.data.length > 0" @uploadDate="updateUploadDate" @type="updateType" @sortBy="updateSortBy"/>
-      <FilterButton />
-      <FilterButton />
     </span>
     <div v-for="d in this.data" :key="d.id">
       <PlaylistTile v-if="d.type == 'youtube#playlist'" :playlist="d" />
@@ -31,7 +29,6 @@
 <script>
 import ChannelTile from "../components/ChannelTile";
 import VideoTile from "../components/VideoTile";
-import FilterButton from "../components/FilterButton";
 import Filters from "../components/Filters";
 import PlaylistTile from "../components/PlaylistTile";
 
@@ -40,7 +37,6 @@ export default {
   components: {
     ChannelTile,
     VideoTile,
-    FilterButton,
     PlaylistTile,
     Filters
   },
