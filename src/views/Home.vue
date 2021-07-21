@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <span>
+      <Filters v-if="this.data.length > 0" @uploadDate="updateUploadDate" @type="updateType" @sortBy="updateSortBy"/>
       <FilterButton />
       <FilterButton />
     </span>
@@ -31,6 +32,7 @@
 import ChannelTile from "../components/ChannelTile";
 import VideoTile from "../components/VideoTile";
 import FilterButton from "../components/FilterButton";
+import Filters from "../components/Filters";
 import PlaylistTile from "../components/PlaylistTile";
 
 export default {
@@ -40,6 +42,7 @@ export default {
     VideoTile,
     FilterButton,
     PlaylistTile,
+    Filters
   },
   props: {
     searchText: String,
@@ -49,14 +52,30 @@ export default {
       data: [],
       nextPageToken: "",
       q: "",
+      uploadDate: "",
+      type: "video%2Cchannel%2Cplaylist",
+      sortBy: "relevance"
     };
   },
   methods: {
-    async fetchSearch(q) {
-      this.q = q;
-      const res = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${q}&maxResults=10&pageToken=${this.nextPageToken}&type=video%2Cchannel%2Cplaylist&key=${process.env.VUE_APP_API_KEY}`
-      );
+    updateUploadDate(q) {
+      this.uploadDate = q;
+    },
+    updateType(q) {
+      this.type = q;
+    },
+    updateSortBy(q) {
+      this.sortBy = q;
+    },
+    async fetchSearch() {
+      let link = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&type=${this.type}&order=${this.sortBy}&maxResults=10&key=${process.env.VUE_APP_API_KEY}`;
+      if(this.q != "")
+        link += `&q=${this.q}`;
+      if(this.nextPageToken != "")
+        link += `&pageToken=${this.nextPageToken}`;
+      if(this.uploadDate) 
+        link += `&publishedAfter=${this.uploadDate}`;
+      const res = await fetch(link);
       const data = await res.json();
       this.nextPageToken = data['nextPageToken'];
       const selectedData = data["items"].map((e) => {
@@ -97,7 +116,33 @@ export default {
   watch: {
     "searchText": {
       handler: async function (q) {
-        this.data = await this.fetchSearch(q);
+        this.q = q;
+        this.nextPageToken = "";
+        this.data = await this.fetchSearch();
+      },
+      deep: true,
+    },
+    "uploadDate": {
+      handler: async function (q) {
+        this.uploadDate = q;
+        this.nextPageToken = "";
+        this.data = await this.fetchSearch();
+      },
+      deep: true,
+    },
+    "type": {
+      handler: async function (q) {
+        this.type = q;
+        this.nextPageToken = "";
+        this.data = await this.fetchSearch();
+      },
+      deep: true,
+    },
+    "sortBy": {
+      handler: async function (q) {
+        this.sortBy = q;
+        this.nextPageToken = "";
+        this.data = await this.fetchSearch();
       },
       deep: true,
     },
