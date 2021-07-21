@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div v-if="!this.loading" class="home">
     <span>
       <Filters v-if="this.data.length > 0" @uploadDate="updateUploadDate" @type="updateType" @sortBy="updateSortBy"/>
     </span>
@@ -50,7 +50,8 @@ export default {
       q: "",
       uploadDate: "",
       type: "video%2Cchannel%2Cplaylist",
-      sortBy: "relevance"
+      sortBy: "relevance",
+      loading: false,
     };
   },
   methods: {
@@ -64,6 +65,8 @@ export default {
       this.sortBy = q;
     },
     async fetchSearch() {
+      this.loading = true;
+      this.$emit('loading', this.loading);
       let link = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&type=${this.type}&order=${this.sortBy}&maxResults=10&key=${process.env.VUE_APP_API_KEY}`;
       if(this.q != "")
         link += `&q=${this.q}`;
@@ -102,6 +105,8 @@ export default {
           };
         }
       });
+      this.loading = false;
+      this.$emit('loading', this.loading);
       return selectedData;
     },
     async loadMore() {
