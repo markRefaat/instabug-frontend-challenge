@@ -3,8 +3,8 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </div> -->
-  <Header @search="search" />
-  <router-view :searchText="searchText" />
+  <Header :loading="this.loading" @search="search" />
+  <router-view @loading="updateLoading" :searchText="searchText" />
 </template>
 
 <script>
@@ -16,11 +16,15 @@ export default {
   data() {
     return {
       searchText: "",
+      loading: false,
     }
   },
   methods: {
     search(q) {
       this.searchText = q;
+    },
+    updateLoading(l) {
+      this.loading = l;
     }
   }
 }
