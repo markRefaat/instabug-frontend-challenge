@@ -19,7 +19,7 @@
         <div>
             SORT BY
             <hr />
-            <span @click="changeSortBy" class="sort-by selected">Revelance</span>
+            <span @click="changeSortBy" class="sort-by selected">Relevance</span>
             <span @click="changeSortBy" class="sort-by">Upload Date</span>
             <span @click="changeSortBy" class="sort-by">View Count</span>
             <span @click="changeSortBy" class="sort-by">Rating</span>
@@ -99,13 +99,13 @@ export default {
             if(alreadySelected)
             {
                 e.target.classList.remove("selected");
-                this.sortBy = "revelance";
+                this.sortBy = "relevance";
             }
             else
             {
                 e.target.classList.add("selected");
                 if(e.target.innerText == "Relevance")
-                this.sortBy = "revelance";
+                this.sortBy = "relevance";
                 else if(e.target.innerText == "Upload Date")          
                 this.sortBy = "date";
                 else if(e.target.innerText == "View Count")
