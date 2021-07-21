@@ -1,10 +1,12 @@
 <template>
     <header>
         <a href="#"><img id="youtube_mobile_icon" alt="Youtube Icon" src="../assets/youtubeMobileIcon.png" /></a>
+        <a href="#"><img id="youtube_desktop_icon" alt="Youtube Icon" src="../assets/youtubeDesktopIcon.png" /></a>
 
         <p v-if="!state">{{text}}</p>
         <input v-if="state" type="text" placeholder="Search" name="search" v-model="text"/>
-        <img @click="toggleSearchInput" id="search_icon" alt="Search Icon" src="../assets/search.png" />
+        <img @click="toggleSearchInput" id="search_mobile_icon" alt="Search Icon" src="../assets/searchMobileIcon.png" />
+        <img @click="toggleSearchInput" id="search_desktop_icon" alt="Search Icon" src="../assets/searchDesktopIcon.png" />
 
     </header>
 </template>
@@ -50,6 +52,12 @@ header {
     padding-right: 15px;
     width: 50px;
 }
+#youtube_desktop_icon {
+    display: none;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 50px;
+}
 input {
     font-size: 23px;
     margin-right:  auto;
@@ -60,8 +68,36 @@ p {
     margin-right:  auto;
     color: white;
 }
-#search_icon {
+#search_mobile_icon {
     padding-right: 15px;
     width: 25px;
+}
+#search_desktop_icon {
+    display: none;
+    padding-right: 15px;
+    width: 50px;
+}
+
+@media (min-width: 992px) {
+    header {
+        position: fixed;
+        background-color: white;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        box-shadow: 1px 1px 5px grey;
+    }
+    #youtube_mobile_icon {
+        display: none;
+    }
+    #youtube_desktop_icon {
+        display: inline;
+    }
+    #search_mobile_icon {
+        display: block;
+    }
+    #search_desktop_icon {
+        display: inline;
+    }
 }
 </style>
