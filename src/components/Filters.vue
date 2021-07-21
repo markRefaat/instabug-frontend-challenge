@@ -1,28 +1,47 @@
 <template>
-    <button @click="slide">Filters</button>
-    <div id="filters" class="filters hide">
-        <div>
-            UPLOAD DATE
-            <hr />
-            <span @click="changeUploadDate" class="upload-date">Last Hour</span>
-            <span @click="changeUploadDate" class="upload-date">Today</span>
-            <span @click="changeUploadDate" class="upload-date">This Week</span>
-            <span @click="changeUploadDate" class="upload-date">This Month</span>
+    <div id="desktop">
+        <button @click="slide">Filters</button>
+        <div id="filters" class="filters hide">
+            <div>
+                UPLOAD DATE
+                <hr />
+                <span @click="changeUploadDate" class="upload-date">Last Hour</span>
+                <span @click="changeUploadDate" class="upload-date">Today</span>
+                <span @click="changeUploadDate" class="upload-date">This Week</span>
+                <span @click="changeUploadDate" class="upload-date">This Month</span>
+            </div>
+            <div>
+                TYPE
+                <hr />
+                <span @click="changeType" class="type">Video</span>
+                <span @click="changeType" class="type">Channel</span>
+                <span @click="changeType" class="type">Playlist</span>
+            </div>
+            <div>
+                SORT BY
+                <hr />
+                <span @click="changeSortBy" class="sort-by selected">Relevance</span>
+                <span @click="changeSortBy" class="sort-by">Upload Date</span>
+                <span @click="changeSortBy" class="sort-by">View Count</span>
+                <span @click="changeSortBy" class="sort-by">Rating</span>
+            </div>
         </div>
-        <div>
-            TYPE
-            <hr />
-            <span @click="changeType" class="type">Video</span>
-            <span @click="changeType" class="type">Channel</span>
-            <span @click="changeType" class="type">Playlist</span>
+    </div>
+    <div id="mobile">
+        <div class="dropdown">
+            <select class="dropbtn" id="type" @change="changeTypeMobile" >
+                <option value="video%2Cchannel%2Cplaylist" selected>All</option>
+                <option value="playlist">Playlist</option>
+                <option value="channel">Channel</option>
+            </select>
         </div>
-        <div>
-            SORT BY
-            <hr />
-            <span @click="changeSortBy" class="sort-by selected">Relevance</span>
-            <span @click="changeSortBy" class="sort-by">Upload Date</span>
-            <span @click="changeSortBy" class="sort-by">View Count</span>
-            <span @click="changeSortBy" class="sort-by">Rating</span>
+         <div class="dropdown">
+            <select class="dropbtn" id="uploadDate" @change="changeUploadDateMobile" >
+                <option value="any" selected>Any Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This month</option>
+            </select>
         </div>
     </div>
 </template>
@@ -39,6 +58,25 @@ export default {
         }
     },
     methods: {
+        changeUploadDateMobile() {
+            let upldate = document.getElementById("uploadDate").value;
+            if(upldate == "any")
+                this.uploadDate = "";
+            else
+            {
+                let backHours = 0;
+                if(upldate == "today")          
+                backHours = 1000 * 60 * 60 * 24;
+                else if(upldate == "week")
+                backHours = 1000 * 60 * 60 * 24 * 7;
+                else if(upldate == "month")
+                backHours = 1000 * 60 * 60 * 24 * 7 * 30;
+                
+                var time = new Date().getTime();
+                var date = new Date(time - backHours).toISOString().replaceAll(":","%3A");
+                this.uploadDate = date.toString();
+            }
+        },
         changeUploadDate(e) {
             let alreadySelected = e.target.classList.contains("selected");
             let uploadDateElements = document.getElementsByClassName("upload-date");
@@ -67,6 +105,9 @@ export default {
                 var date = new Date(time - backHours).toISOString().replaceAll(":","%3A");
                 this.uploadDate = date.toString();
             }
+        },
+        changeTypeMobile() {
+            this.type = document.getElementById("type").value;
         },
         changeType(e) {
             let alreadySelected = e.target.classList.contains("selected");
@@ -134,6 +175,9 @@ export default {
 </script>
 
 <style scoped>
+#desktop{
+    display: none;
+}
 button {
     border: none;
     background-color: transparent;
@@ -167,5 +211,34 @@ button {
 .selected::after {
   content: "x";
   padding-left: 10px;
+}
+
+
+.dropbtn {
+  background-color: #E8E5DE;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 5px;
+  margin-top: 10px;
+  margin-left: 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.show {display:block;}
+
+@media (min-width: 992px) {
+    #desktop {
+        display: block;
+    }
+    #mobile {
+        display: none;
+    };
 }
 </style>
