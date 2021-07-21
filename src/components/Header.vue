@@ -1,26 +1,39 @@
 <template>
+    <div v-if="loading" class="horizontal-loading">
+        <HorizontalLoading />
+    </div>
     <header>
         <a href="#"><img id="youtube_mobile_icon" alt="Youtube Icon" src="../assets/youtubeMobileIcon.png" /></a>
         <a href="#"><img id="youtube_desktop_icon" alt="Youtube Icon" src="../assets/youtubeDesktopIcon.png" /></a>
-
         <p v-if="!state">{{text}}</p>
         <input v-if="state" type="text" placeholder="Search" name="search" v-model="text"/>
         <img @click="toggleSearchInput" id="search_mobile_icon" alt="Search Icon" src="../assets/searchMobileIcon.png" />
         <img @click="toggleSearchInput" id="search_desktop_icon" alt="Search Icon" src="../assets/searchDesktopIcon.png" />
-
     </header>
+    <div v-if="loading" class="circular-loading">
+        <CircularLoading />
+    </div>
 </template>
 
 
 
 <script>
+import CircularLoading from "./CircularLoading.vue"
+import HorizontalLoading from "./HorizontalLoading.vue"
 export default {
     name: "Header",
+    components: {
+        CircularLoading,
+        HorizontalLoading,
+    },
     data() {
         return {
             state: false,
             text: ""
         }
+    },
+    props: {
+        loading: Boolean,
     },
     methods: {
         toggleSearchInput(){
@@ -30,7 +43,7 @@ export default {
     watch: {
         "text" : function(value) {
             this.$emit('search', value);
-        }
+        },
     },
 }
 </script>
@@ -78,6 +91,10 @@ p {
     width: 50px;
 }
 
+.horizontal-loading{
+    display: none;
+}
+
 @media (min-width: 992px) {
     header {
         position: fixed;
@@ -99,5 +116,13 @@ p {
     #search_desktop_icon {
         display: inline;
     }
+    .circular-loading {
+        display: none;
+    }
+    .horizontal-loading{
+        display: block;
+    }
+
 }
+
 </style>
