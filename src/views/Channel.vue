@@ -115,6 +115,11 @@ export default {
 </script>
 
 <style scoped>
+.channel {
+  max-width: 1400px;
+  margin: auto;
+  position: relative;
+}
 .image-cover {
   width: 100%;
   height: 150px;
@@ -124,7 +129,7 @@ export default {
 
 .image-profile {
   position: absolute;
-  top: 160px;
+  top: 120px;
   left: 20px;
   width: 100px;
   height: 100px;
@@ -133,7 +138,7 @@ export default {
 .channel-details {
   display: inline;
   position: absolute;
-  top: 220px;
+  top: 160px;
   left: 130px;
 }
 

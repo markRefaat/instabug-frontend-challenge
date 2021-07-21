@@ -14,6 +14,10 @@
 </template>
 
 <style>
+.home {
+  max-width: 1400px;
+  margin: auto;
+}
 #loadMore {
   font-size: 20px;
   width: 95%;
