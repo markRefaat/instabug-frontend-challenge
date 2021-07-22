@@ -157,6 +157,7 @@ export default {
 <style scoped>
 #desktop {
   display: none;
+  padding-top: 50px;
 }
 button {
   border: none;

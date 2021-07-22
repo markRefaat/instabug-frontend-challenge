@@ -20,6 +20,7 @@
       v-if="state"
       type="text"
       placeholder="Search"
+      id="searchInput"
       name="search"
       v-model="text"
     />
