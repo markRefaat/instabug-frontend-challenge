@@ -1,9 +1,7 @@
 <template>
   <div class="video">
     <div class="video-wrapper">
-      <iframe
-        :src="'https://www.youtube.com/embed/' + id"
-      ></iframe>
+      <iframe :src="'https://www.youtube.com/embed/' + id"></iframe>
     </div>
     <div class="video-details">
       <div class="video-title">{{ details.title }}</div>
@@ -28,7 +26,9 @@
     <div v-for="d in videos" :key="d.id">
       <VideoTile :video="d" />
     </div>
-    <button v-if="videos.length > 0" id="loadMore" @click="loadMore">Load more</button>
+    <button v-if="videos.length > 0" id="loadMore" @click="loadMore">
+      Load more
+    </button>
   </div>
 </template>
 
@@ -44,7 +44,7 @@ export default {
       videos: [],
       details: {},
       nextPageToken: "",
-      id: ""
+      id: "",
     };
   },
   methods: {
@@ -53,7 +53,7 @@ export default {
         `https://youtube.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=${this.$route.params.id}&pageToken=${this.nextPageToken}&maxResults=5&type=video&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
-      this.nextPageToken = data['nextPageToken'];
+      this.nextPageToken = data["nextPageToken"];
       const selectedData = data["items"].map((e) => {
         return {
           type: e["id"]["kind"],
@@ -86,13 +86,13 @@ export default {
         views: this.kFormatter(data["items"][0]["statistics"]["viewCount"]),
       };
       return selectedData;
-    }, 
+    },
     async fetchPlaylistVideos() {
       const res = await fetch(
         `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&pageToken=${this.nextPageToken}&playlistId=${this.$route.params.id}&maxResults=5&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
-      this.nextPageToken = data['nextPageToken'];
+      this.nextPageToken = data["nextPageToken"];
       const selectedData = data["items"].map((e) => {
         return {
           type: e["snippet"]["resourceId"]["kind"],
@@ -105,8 +105,7 @@ export default {
       return selectedData;
     },
     async loadMore() {
-      if (this.$route.params.id.length == 11) 
-      {
+      if (this.$route.params.id.length == 11) {
         let moreVideos = await this.fetchRelatedVideos();
         this.videos = this.videos.concat(moreVideos);
       } else {
@@ -116,8 +115,7 @@ export default {
     },
   },
   async created() {
-    if (this.$route.params.id.length == 11) 
-    {
+    if (this.$route.params.id.length == 11) {
       this.id = this.$route.params.id;
       this.videos = await this.fetchRelatedVideos();
       this.details = await this.fetchVideoDetails(this.$route.params.id);
@@ -126,14 +124,12 @@ export default {
       this.details = await this.fetchVideoDetails(this.videos[0].id);
       this.id = this.videos[0].id;
     }
-
   },
   watch: {
     "$route.params.id": {
       handler: async function (id) {
         if (id != null) {
-          if (this.$route.params.id.length == 11) 
-          {
+          if (this.$route.params.id.length == 11) {
             this.id = this.$route.params.id;
             this.videos = await this.fetchRelatedVideos();
             this.details = await this.fetchVideoDetails(this.$route.params.id);

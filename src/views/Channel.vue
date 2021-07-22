@@ -1,15 +1,7 @@
 <template>
   <div class="channel">
-    <img
-      class="image-cover"
-      :src="details.cover"
-      alt=""
-    />
-    <img
-      class="image-profile"
-      :src="details.thumbnail"
-      alt=""
-    />
+    <img class="image-cover" :src="details.cover" alt="" />
+    <img class="image-profile" :src="details.thumbnail" alt="" />
     <div class="channel-details">
       <div class="channel-title">{{ details.title }}</div>
       <div class="channel-data">
@@ -22,13 +14,15 @@
       <PlaylistTile v-if="d.type == 'youtube#playlist'" :playlist="d" />
       <VideoTile v-if="d.type == 'youtube#video'" :video="d" />
     </div>
-    <button v-if="data.length > 0" id="loadMore" @click="loadMore">Load more</button>
+    <button v-if="data.length > 0" id="loadMore" @click="loadMore">
+      Load more
+    </button>
   </div>
 </template>
 
 <script>
-import VideoTile from '../components/VideoTile'
-import PlaylistTile from '../components/PlaylistTile'
+import VideoTile from "../components/VideoTile";
+import PlaylistTile from "../components/PlaylistTile";
 export default {
   name: "Channel",
   data() {
@@ -36,7 +30,7 @@ export default {
       details: {},
       data: [],
       nextPageToken: "",
-    }
+    };
   },
   methods: {
     async fetchChannelDetails() {
@@ -44,12 +38,15 @@ export default {
         `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics%2CbrandingSettings&id=${this.$route.params.id}&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
-      
+
       const selectedData = {
         title: data["items"][0]["snippet"]["title"],
         thumbnail: data["items"][0]["snippet"]["thumbnails"]["medium"]["url"],
-        cover: data["items"][0]["brandingSettings"]["image"]["bannerExternalUrl"],
-        subscribers: this.kFormatter(data["items"][0]["statistics"]["subscriberCount"]),
+        cover:
+          data["items"][0]["brandingSettings"]["image"]["bannerExternalUrl"],
+        subscribers: this.kFormatter(
+          data["items"][0]["statistics"]["subscriberCount"]
+        ),
       };
       console.log(selectedData);
       return selectedData;
@@ -65,7 +62,7 @@ export default {
         `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${this.$route.params.id}&pageToken=${this.nextPageToken}&maxResults=10&type=video%2Cplaylist&key=${process.env.VUE_APP_API_KEY}`
       );
       const data = await res.json();
-      this.nextPageToken = data['nextPageToken'];
+      this.nextPageToken = data["nextPageToken"];
       const selectedData = data["items"].map((e) => {
         if (e["id"]["kind"] == "youtube#video") {
           return {
@@ -88,7 +85,7 @@ export default {
       });
       return selectedData;
     },
-     async loadMore() {
+    async loadMore() {
       let moreData = await this.fetchChannelVideosAndPlaylists();
       this.data = this.data.concat(moreData);
     },

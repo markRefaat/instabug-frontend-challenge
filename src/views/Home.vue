@@ -1,14 +1,21 @@
 <template>
   <div v-if="!this.loading" class="home">
     <span>
-      <Filters v-if="this.data.length > 0" @uploadDate="updateUploadDate" @type="updateType" @sortBy="updateSortBy"/>
+      <Filters
+        v-if="this.data.length > 0"
+        @uploadDate="updateUploadDate"
+        @type="updateType"
+        @sortBy="updateSortBy"
+      />
     </span>
     <div v-for="d in this.data" :key="d.id">
       <PlaylistTile v-if="d.type == 'youtube#playlist'" :playlist="d" />
       <ChannelTile v-if="d.type == 'youtube#channel'" :channel="d" />
       <VideoTile v-if="d.type == 'youtube#video'" :video="d" />
     </div>
-    <button v-if="this.data.length > 0" id="loadMore" @click="loadMore">Load more</button>
+    <button v-if="this.data.length > 0" id="loadMore" @click="loadMore">
+      Load more
+    </button>
   </div>
 </template>
 
@@ -20,8 +27,8 @@
 #loadMore {
   font-size: 20px;
   width: 95%;
-  margin:0 auto;
-  display:block;
+  margin: 0 auto;
+  display: block;
   padding: 5px;
 }
 </style>
@@ -38,7 +45,7 @@ export default {
     ChannelTile,
     VideoTile,
     PlaylistTile,
-    Filters
+    Filters,
   },
   props: {
     searchText: String,
@@ -66,17 +73,14 @@ export default {
     },
     async fetchSearch() {
       this.loading = true;
-      this.$emit('loading', this.loading);
+      this.$emit("loading", this.loading);
       let link = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&type=${this.type}&order=${this.sortBy}&maxResults=10&key=${process.env.VUE_APP_API_KEY}`;
-      if(this.q != "")
-        link += `&q=${this.q}`;
-      if(this.nextPageToken != "")
-        link += `&pageToken=${this.nextPageToken}`;
-      if(this.uploadDate) 
-        link += `&publishedAfter=${this.uploadDate}`;
+      if (this.q != "") link += `&q=${this.q}`;
+      if (this.nextPageToken != "") link += `&pageToken=${this.nextPageToken}`;
+      if (this.uploadDate) link += `&publishedAfter=${this.uploadDate}`;
       const res = await fetch(link);
       const data = await res.json();
-      this.nextPageToken = data['nextPageToken'];
+      this.nextPageToken = data["nextPageToken"];
       const selectedData = data["items"].map((e) => {
         if (e["id"]["kind"] == "youtube#video") {
           return {
@@ -106,7 +110,7 @@ export default {
         }
       });
       this.loading = false;
-      this.$emit('loading', this.loading);
+      this.$emit("loading", this.loading);
       return selectedData;
     },
     async loadMore() {
@@ -115,7 +119,7 @@ export default {
     },
   },
   watch: {
-    "searchText": {
+    searchText: {
       handler: async function (q) {
         this.q = q;
         this.nextPageToken = "";
@@ -123,7 +127,7 @@ export default {
       },
       deep: true,
     },
-    "uploadDate": {
+    uploadDate: {
       handler: async function (q) {
         this.uploadDate = q;
         this.nextPageToken = "";
@@ -131,7 +135,7 @@ export default {
       },
       deep: true,
     },
-    "type": {
+    type: {
       handler: async function (q) {
         this.type = q;
         this.nextPageToken = "";
@@ -139,7 +143,7 @@ export default {
       },
       deep: true,
     },
-    "sortBy": {
+    sortBy: {
       handler: async function (q) {
         this.sortBy = q;
         this.nextPageToken = "";
@@ -147,6 +151,6 @@ export default {
       },
       deep: true,
     },
-  }
+  },
 };
 </script>

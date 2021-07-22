@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Header from "./components/Header"
+import Header from "./components/Header";
 export default {
   components: {
     Header,
@@ -17,7 +17,7 @@ export default {
     return {
       searchText: "",
       loading: false,
-    }
+    };
   },
   methods: {
     search(q) {
@@ -25,9 +25,9 @@ export default {
     },
     updateLoading(l) {
       this.loading = l;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
